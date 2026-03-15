@@ -15,8 +15,8 @@ export class Gateway1Strategy implements IPaymentGateway {
     async processPayment(data: PaymentDTO): Promise<PaymentResult> {
         try {
             const response = await this.httpClient.post('/login', {
-                email: "dev@betalent.tech",
-                token: "FEC9BB078BF338F464F96B48089EB498"
+                email: env.get('LOGIN_ROUTE_EMAIL'),
+                token: env.get('LOGIN_ROUTE_TOKEN'),
             })
 
             if (response.status === 200 && response.data.token) {

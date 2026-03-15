@@ -22,6 +22,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.secret(),
   APP_URL: Env.schema.string({ format: 'url', tld: false }),
   GATEWAY1_URL: Env.schema.string({ format: 'url', tld: false }),
+  GATEWAY2_URL: Env.schema.string({ format: 'url', tld: false }),
+  GATEWAY2_AUTH_TOKEN: Env.schema.string(),
+  GATEWAY2_AUTH_SECRET: Env.schema.string(),
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
