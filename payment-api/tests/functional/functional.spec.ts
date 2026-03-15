@@ -22,7 +22,7 @@ test.group('Checkout Transactions', (group) => {
       }
     }
 
-    const response = await client.post('/checkout').json(payload)
+    const response = await client.post('/api/v1/checkout').json(payload)
 
     response.assertStatus(201)
     response.assertBodyContains({
