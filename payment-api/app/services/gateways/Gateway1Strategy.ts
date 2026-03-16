@@ -1,6 +1,6 @@
 import axios from 'axios'
 import env from '#start/env'
-import { IPaymentGateway, PaymentResult } from '#Interfaces/IPaymentGateway'
+import { IPaymentGateway, PaymentResult, RefundResult } from '#Interfaces/IPaymentGateway'
 import { PaymentDTO } from '#DTOs/PaymentDTO'
 
 export class Gateway1Strategy implements IPaymentGateway {
@@ -53,6 +53,43 @@ export class Gateway1Strategy implements IPaymentGateway {
             return {
                 success: false,
                 errorMessage: error instanceof Error ? error.message : 'Unknown error'
+            }
+        }
+    }
+
+    async processRefund(transactionId: string): Promise<RefundResult> {
+        try {
+            const response = await this.httpClient.post('/login', {
+                email: env.get('LOGIN_ROUTE_EMAIL'),
+                token: env.get('LOGIN_ROUTE_TOKEN'),
+            })
+
+            if (response.status === 200 && response.data.token) {
+                const refundResponse = await this.httpClient.post(`/transactions/${transactionId}/charge_back`, 
+                    {},
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${response.data.token}`
+                        }
+                    }
+                )
+                
+                const isChargedBack = refundResponse.data.status === 'charged_back';
+
+                return {
+                    success: refundResponse.status === 201 && isChargedBack,
+                }
+            }
+
+            return {
+                success: false,
+                errorMessage: 'Authentication failed'
+            }
+        } catch (error) {
+            console.error('Refund error:', error instanceof Error ? error.message : error)
+            return {
+                success: false,
+                errorMessage: error.response?.data?.message || 'Gateway refund connection error'
             }
         }
     }

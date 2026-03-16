@@ -1,6 +1,6 @@
 import axios from 'axios'
 import env from '#start/env'
-import { IPaymentGateway, PaymentResult } from '#Interfaces/IPaymentGateway'
+import { IPaymentGateway, PaymentResult, RefundResult } from '#Interfaces/IPaymentGateway'
 import { PaymentDTO } from '#DTOs/PaymentDTO'
 
 export class Gateway2Strategy implements IPaymentGateway {
@@ -39,6 +39,28 @@ export class Gateway2Strategy implements IPaymentGateway {
             }
         }
         catch (error) {
+            return {
+                success: false,
+                errorMessage: error instanceof Error ? error.message : 'Unknown error'
+            }
+        }
+    }
+
+    async processRefund(transactionId: string): Promise<RefundResult> {
+        try {
+            const response = await this.httpClient.post(`/transacoes/reembolso`, {
+                id: transactionId
+            }, {
+                headers: {
+                    'Gateway-Auth-Token': env.get('GATEWAY2_AUTH_TOKEN'),
+                    'Gateway-Auth-Secret': env.get('GATEWAY2_AUTH_SECRET')
+                }
+            })
+
+            return {
+                success: response.status === 200
+            }
+        } catch (error) {
             return {
                 success: false,
                 errorMessage: error instanceof Error ? error.message : 'Unknown error'
