@@ -14,6 +14,8 @@ export default class RefundsController {
 
     const result = await paymentService.refund(transaction)
 
+    console.log('Refund result:', result)
+
     if (result.success) {
       transaction.status = 'refunded'
       await transaction.save()

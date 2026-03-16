@@ -61,6 +61,15 @@ export class PaymentService {
             throw new Error(`Payment strategy for ${gatewayName} not found.`)
         }
 
-        return await strategy.processRefund(transaction.externalId)
+        try {
+            const result = await strategy.processRefund(transaction.externalId)
+            return result
+        } catch (error) {
+            console.error(`Error processing refund on ${gatewayName}:`, error instanceof Error ? error.message : error)
+            return {
+                success: false,
+                errorMessage: error instanceof Error ? error.message : 'Unknown error'
+            }
+        }
     }
 }

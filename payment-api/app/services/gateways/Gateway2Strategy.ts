@@ -35,7 +35,7 @@ export class Gateway2Strategy implements IPaymentGateway {
 
             return {
                 success: transactionResponse.status === 201,
-                transactionId: transactionResponse.data.transactionId
+                transactionId: transactionResponse.data.id
             }
         }
         catch (error) {
@@ -58,7 +58,7 @@ export class Gateway2Strategy implements IPaymentGateway {
             })
 
             return {
-                success: response.status === 200
+                success: response.status === 201
             }
         } catch (error) {
             return {
