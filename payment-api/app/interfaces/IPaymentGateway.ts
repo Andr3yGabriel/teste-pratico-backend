@@ -4,6 +4,7 @@ export interface PaymentResult {
   success: boolean;
   transactionId?: string;
   errorMessage?: string;
+  gatewayId?: string;
 }
 
 export interface IPaymentGateway {
