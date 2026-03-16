@@ -40,7 +40,7 @@ export class Gateway1Strategy implements IPaymentGateway {
 
                 return {
                     success: transactionResponse.status === 201,
-                    transactionId: transactionResponse.data.transactionId
+                    transactionId: transactionResponse.data.id
                 }
             }
 
