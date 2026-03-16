@@ -80,7 +80,6 @@ export default class CheckoutsController {
         } else {
             pendingTransaction.status = 'failed';
             await pendingTransaction.save();
-            console.log(`GetawayID: ${paymentResult.gatewayId}, TransactionID: ${paymentResult.transactionId}, Error: ${paymentResult.errorMessage}`)
 
             return response.badRequest({
                 message: 'Payment failed',
