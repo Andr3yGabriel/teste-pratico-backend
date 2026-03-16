@@ -3,6 +3,7 @@ import Gateway from "#models/gateway";
 import { IPaymentGateway } from "#Interfaces/IPaymentGateway";
 import { Gateway1Strategy } from "./gateways/Gateway1Strategy.js";
 import { Gateway2Strategy } from "./gateways/Gateway2Strategy.js";
+import Transaction from "#models/transaction";
 
 export class PaymentService {
     private strategyMap: Record<string, IPaymentGateway> = {
@@ -41,5 +42,25 @@ export class PaymentService {
             }
         }
         throw new Error("All payment gateways failed");
+    }
+
+   async refund(transaction: Transaction) {
+        await transaction.load('gateway')
+
+        if (!transaction.externalId) {
+            return { 
+                success: false, 
+                errorMessage: 'This transaction does not have an external reference for refund.' 
+            }
+        }
+
+        const gatewayName = transaction.gateway.name
+        const strategy = this.strategyMap[gatewayName]
+
+        if (!strategy) {
+            throw new Error(`Payment strategy for ${gatewayName} not found.`)
+        }
+
+        return await strategy.processRefund(transaction.externalId)
     }
 }
