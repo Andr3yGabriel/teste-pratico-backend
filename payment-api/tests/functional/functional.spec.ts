@@ -2,6 +2,8 @@ import { test } from '@japa/runner'
 import Product from '#models/product'
 import Gateway from '#models/gateway'
 import crypto from 'crypto'
+import Transaction from '#models/transaction'
+import Client from '#models/client'
 
 test.group('Checkout Transactions', (group) => {
   
@@ -37,5 +39,41 @@ test.group('Checkout Transactions', (group) => {
       message: 'Checkout successful'
     })
     assert.property(response.body(), 'transaction_id')
+  })
+})
+
+test.group('Refund Transactions', (group) => {
+  test('should process a refund transaction succesfully via Gateway', async ({client}) => {
+    const getaway = await Gateway.create({
+      gatewayId: crypto.randomUUID(),
+      name: 'Gateway 1',
+      isActive: true,
+      priority: 1
+    })
+
+    const dbClient = await Client.create({
+      name: 'Tester Refund',
+      email: 'refund@test.com'
+    })
+
+    const transaction = await Transaction.create({
+      transactionId: crypto.randomUUID(),
+      gatewayId: getaway.gatewayId,
+      clientId: dbClient.clientId,
+      amount: 50000,
+      status: 'paid',
+      cardLastNumbers: '6063'
+    })
+    const payload = {
+      transaction_id: transaction.transactionId,
+    }
+
+    const response = await client.post('/api/v1/refund/:id').json(payload)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      message: 'Refund successful',
+      order_status: 'refunded'
+    })
   })
 })
