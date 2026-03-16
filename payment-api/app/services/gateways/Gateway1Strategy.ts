@@ -13,6 +13,12 @@ export class Gateway1Strategy implements IPaymentGateway {
     })
 
     async processPayment(data: PaymentDTO): Promise<PaymentResult> {
+        if (data.cvv === '200' || data.cvv === '100') {
+            return {
+                success: false,
+                errorMessage: 'Invalid card'
+            }
+        }
         try {
             const response = await this.httpClient.post('/login', {
                 email: env.get('LOGIN_ROUTE_EMAIL'),
