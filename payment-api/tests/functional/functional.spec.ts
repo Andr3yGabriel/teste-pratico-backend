@@ -77,4 +77,40 @@ test.group('Refund Transactions', (group) => {
     await Product.query().delete()
     await Gateway.query().delete()
   })
+
+  test('should process a refund transaction successfully via Gateway 2', async ({ client, assert }) => {
+  await Gateway.create({ 
+    name: 'Gateway 2', 
+    isActive: true, 
+    priority: 1 
+  })
+  const product = await Product.create({ name: 'Produto G2', amount: 25000 })
+
+  const checkoutPayload = {
+    products: [{ product_id: product.productId, quantity: 1 }],
+    client: {
+      name: "Tester G2",
+      email: "g2@test.com",
+      cardNumber: "5569000000006063",
+      cvv: "010"
+    }
+  }
+  const checkoutResponse = await client.post('/api/v1/checkout').json(checkoutPayload)
+  const transactionId = (checkoutResponse.body() as any).transaction_id
+
+  const response = await client.post(`/api/v1/refund/${transactionId}`)
+
+  response.assertBodyContains({
+    message: 'Refund successful',
+    order_status: 'refunded'
+  })
+  response.assertStatus(200)
+
+  const updatedTransaction = await Transaction.findOrFail(transactionId)
+  assert.equal(updatedTransaction.status, 'refunded')
+
+  await Transaction.query().delete()
+  await Product.query().delete()
+  await Gateway.query().delete()
+})
 })
