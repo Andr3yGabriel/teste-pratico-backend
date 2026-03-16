@@ -11,6 +11,7 @@ import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
 import CheckoutsController from '#controllers/checkouts_controller'
+import RefundsController from '#controllers/refunds_controller'
 
 router
   .group(() => {
@@ -23,5 +24,6 @@ router
       .as('auth')
 
     router.post('checkout', [CheckoutsController, 'handle'])
+    router.post('refund/:id', [RefundsController, 'handle'])
   })
   .prefix('/api/v1')
