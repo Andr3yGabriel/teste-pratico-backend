@@ -32,6 +32,21 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class ClientSchema extends BaseModel {
+  static $columns = ['clientId', 'createdAt', 'email', 'name', 'updatedAt'] as const
+  $columns = ClientSchema.$columns
+  @column({ isPrimary: true })
+  declare clientId: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare email: string
+  @column()
+  declare name: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class GatewaySchema extends BaseModel {
   static $columns = ['createdAt', 'gatewayId', 'isActive', 'name', 'priority', 'updatedAt'] as const
   $columns = GatewaySchema.$columns
@@ -60,6 +75,46 @@ export class ProductSchema extends BaseModel {
   declare name: string
   @column({ isPrimary: true })
   declare productId: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class TransactionProductSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'productId', 'quantity', 'transactionId', 'updatedAt'] as const
+  $columns = TransactionProductSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare productId: string
+  @column()
+  declare quantity: number
+  @column()
+  declare transactionId: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class TransactionSchema extends BaseModel {
+  static $columns = ['amount', 'cardLastNumbers', 'clientId', 'createdAt', 'externalId', 'gatewayId', 'status', 'transactionId', 'updatedAt'] as const
+  $columns = TransactionSchema.$columns
+  @column()
+  declare amount: number
+  @column()
+  declare cardLastNumbers: string
+  @column()
+  declare clientId: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare externalId: string | null
+  @column()
+  declare gatewayId: string
+  @column()
+  declare status: string
+  @column({ isPrimary: true })
+  declare transactionId: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
