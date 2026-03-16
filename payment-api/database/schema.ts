@@ -25,7 +25,7 @@ export class AuthAccessTokenSchema extends BaseModel {
   @column()
   declare name: string | null
   @column()
-  declare tokenableId: number
+  declare tokenableId: string
   @column()
   declare type: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
@@ -110,7 +110,7 @@ export class TransactionSchema extends BaseModel {
   @column()
   declare externalId: string | null
   @column()
-  declare gatewayId: string
+  declare gatewayId: string | null
   @column()
   declare status: string
   @column({ isPrimary: true })
@@ -120,18 +120,18 @@ export class TransactionSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
+  static $columns = ['createdAt', 'email', 'password', 'role', 'updatedAt', 'userId'] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
   declare email: string
-  @column()
-  declare fullName: string | null
-  @column({ isPrimary: true })
-  declare id: number
   @column({ serializeAs: null })
   declare password: string
+  @column()
+  declare role: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column({ isPrimary: true })
+  declare userId: string
 }

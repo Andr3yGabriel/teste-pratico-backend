@@ -6,7 +6,6 @@ export const checkoutBodyValidator = vine.create({
         quantity: vine.number().positive()
     })),
     client: vine.object({
-        client_id: vine.string().uuid(),
         name: vine.string(),
         email: vine.string().email(),
         cardNumber: vine.string().fixedLength(16),

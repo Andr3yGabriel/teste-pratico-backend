@@ -53,7 +53,10 @@ export default class CheckoutsController {
             await trx.commit()
         } catch (error) {
             await trx.rollback()
-            return response.internalServerError({ error: 'Failed to create transaction' })
+            return response.internalServerError({ 
+                error: 'Failed to create transaction', 
+                details: error instanceof Error ? error.message : String(error)
+            })
         }
 
         const paymentData: PaymentDTO = {
@@ -77,6 +80,7 @@ export default class CheckoutsController {
         } else {
             pendingTransaction.status = 'failed';
             await pendingTransaction.save();
+            console.log(`GetawayID: ${paymentResult.gatewayId}, TransactionID: ${paymentResult.transactionId}, Error: ${paymentResult.errorMessage}`)
 
             return response.badRequest({
                 message: 'Payment failed',
