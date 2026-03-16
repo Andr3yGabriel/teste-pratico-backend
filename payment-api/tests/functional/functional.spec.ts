@@ -4,7 +4,7 @@ import Gateway from '#models/gateway'
 import crypto from 'crypto'
 import Transaction from '#models/transaction'
 
-test.group('Checkout Transactions', (group) => {
+test.group('Checkout Transactions', () => {
   
   test('should process a checkout transaction successfully via Gateway', async ({ client, assert }) => {
     const productId1 = crypto.randomUUID()
@@ -45,7 +45,7 @@ test.group('Checkout Transactions', (group) => {
   })
 })
 
-test.group('Refund Transactions', (group) => {
+test.group('Refund Transactions', () => {
   test('should process a refund transaction succesfully via Gateway', async ({client, assert}) => {
     await Gateway.create({ name: 'Gateway 1', isActive: true, priority: 1 })
     const product = await Product.create({ name: 'Item Teste', amount: 10000 })
