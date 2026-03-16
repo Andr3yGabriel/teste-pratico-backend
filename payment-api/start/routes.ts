@@ -7,23 +7,16 @@
 |
 */
 
-import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
-import { controllers } from '#generated/controllers'
 import CheckoutsController from '#controllers/checkouts_controller'
 import RefundsController from '#controllers/refunds_controller'
+import { middleware } from './kernel.ts'
 
 router
   .group(() => {
-    router
-      .group(() => {
-        router.post('login', [controllers.AccessToken, 'store'])
-        router.post('logout', [controllers.AccessToken, 'destroy']).use(middleware.auth())
-      })
-      .prefix('auth')
-      .as('auth')
-
-    router.post('checkout', [CheckoutsController, 'handle'])
-    router.post('refund/:id', [RefundsController, 'handle'])
+    router.post('refund/:id', [RefundsController])
+      .use(middleware.role(['ADMIN', 'FINANCE']))
+    router.post('checkout', [CheckoutsController])
+      .use(middleware.role(['ADMIN', 'MANAGER', 'FINANCE', 'USER']))
   })
   .prefix('/api/v1')
